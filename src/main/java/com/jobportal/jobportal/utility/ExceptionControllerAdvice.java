@@ -34,9 +34,9 @@ public class ExceptionControllerAdvice {
             msg= ce.getConstraintViolations().stream().map(ConstraintViolation::getMessage)
                     .collect(Collectors.joining(", "));
         }
-        ErrorInfo errorInfo = new ErrorInfo(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(),
+        ErrorInfo errorInfo = new ErrorInfo(msg, HttpStatus.BAD_REQUEST.value(),
                 LocalDateTime.now());
-        return new ResponseEntity<>(errorInfo, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(errorInfo, HttpStatus.BAD_REQUEST);
 
     }
 }

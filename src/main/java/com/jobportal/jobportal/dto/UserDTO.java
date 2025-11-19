@@ -1,7 +1,9 @@
 package com.jobportal.jobportal.dto;
 
 import com.jobportal.jobportal.entity.User;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,11 +16,16 @@ public class UserDTO {
 
 
     private String id;
-    @NotBlank(message="Name should not be empty or blank")
+    @NotBlank(message="{user.name.absent}")
     private String name;
-    @NotBlank(message="Email should not be empty or blank")
+    @NotBlank(message="{user.email.absent}")
+    @Email(message = "{user.email.invalid}")
     private String email;
-    @NotBlank(message="Password should not be empty or blank")
+    @NotBlank(message="{user.password.absent}")
+    @Pattern(
+            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,15}$",
+            message = "{user.password.invalid}"
+    )
     private String password;
     private AccountType accountType;
 
