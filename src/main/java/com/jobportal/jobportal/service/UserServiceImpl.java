@@ -2,7 +2,9 @@ package com.jobportal.jobportal.service;
 
 import com.jobportal.jobportal.dto.UserDTO;
 import com.jobportal.jobportal.entity.User;
+import com.jobportal.jobportal.exceptions.JobPortalException;
 import com.jobportal.jobportal.repository.UserRepository;
+import com.jobportal.jobportal.utility.Utilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +16,8 @@ public class UserServiceImpl implements UserService{
     private UserRepository userRepository;
 
     @Override
-    public UserDTO registerUser(UserDTO userDTO) {
+    public UserDTO registerUser(UserDTO userDTO) throws JobPortalException {
+        userDTO.setId(Utilities.getNextSequence("user"));
         User user = userDTO.toEntity();
         user = userRepository.save(user);
         return user.toDTO();

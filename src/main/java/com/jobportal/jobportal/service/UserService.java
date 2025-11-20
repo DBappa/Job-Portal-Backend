@@ -1,9 +1,11 @@
 package com.jobportal.jobportal.service;
 
 import com.jobportal.jobportal.dto.UserDTO;
+import com.jobportal.jobportal.exceptions.JobPortalException;
 
 public interface UserService {
 
-    public UserDTO registerUser(UserDTO user);
+    public UserDTO registerUser(UserDTO user) throws JobPortalException;
+
 
 }
