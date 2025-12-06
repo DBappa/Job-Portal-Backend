@@ -6,7 +6,12 @@ import com.jobportal.jobportal.entity.User;
 import com.jobportal.jobportal.exceptions.JobPortalException;
 import com.jobportal.jobportal.repository.UserRepository;
 import com.jobportal.jobportal.utility.Utilities;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +29,14 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private JavaMailSender sender;
+    @Autowired
+    private JavaMailSenderImpl mailSender;
+
+    @Autowired
+    private OTPService otpService;
 
     @Override
     public UserDTO registerUser(UserDTO userDTO) throws JobPortalException {
@@ -45,5 +58,19 @@ public class UserServiceImpl implements UserService{
             throw new JobPortalException("INVALID_PASSWORD");
         }
         return user.toDTO();
+    }
+
+    @Override
+    public Boolean sendOtp(String email) throws Exception {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new JobPortalException("USER_NOT_FOUND"));
+        MimeMessage mm= mailSender.createMimeMessage();
+        MimeMessageHelper message= new MimeMessageHelper(mm,true);
+        message.setTo(email);
+        message.setSubject("Your OTP code");
+        //According to Code Marshal Code
+        //String otp= Utilities.generateOTP();
+        // More Secure Version
+        String otp = otpService.generateAndStoreOTP(String.valueOf(user.getId()));
+        return null;
     }
 }
