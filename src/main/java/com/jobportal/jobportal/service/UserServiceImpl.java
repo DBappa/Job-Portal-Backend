@@ -5,6 +5,7 @@ import com.jobportal.jobportal.dto.UserDTO;
 import com.jobportal.jobportal.entity.User;
 import com.jobportal.jobportal.exceptions.JobPortalException;
 import com.jobportal.jobportal.repository.UserRepository;
+import com.jobportal.jobportal.utility.EmailTemplate;
 import com.jobportal.jobportal.utility.Utilities;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -66,11 +67,13 @@ public class UserServiceImpl implements UserService{
         MimeMessage mm= mailSender.createMimeMessage();
         MimeMessageHelper message= new MimeMessageHelper(mm,true);
         message.setTo(email);
-        message.setSubject("Your OTP code");
+        message.setSubject(EmailTemplate.getSubject());
         //According to Code Marshal Code
         //String otp= Utilities.generateOTP();
         // More Secure Version
         String otp = otpService.generateAndStoreOTP(String.valueOf(user.getId()));
-        return null;
+        message.setText(EmailTemplate.generateOtpEmailHtml(user.getName(),otp,5),true);
+        mailSender.send(mm);
+        return true;
     }
 }

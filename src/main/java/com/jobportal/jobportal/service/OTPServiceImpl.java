@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
-@Service
-public class OTPServiceImpl {
+@Service(value="otpService")
+public class OTPServiceImpl implements OTPService{
 
 
     private final OtpRepository otpRepo;
