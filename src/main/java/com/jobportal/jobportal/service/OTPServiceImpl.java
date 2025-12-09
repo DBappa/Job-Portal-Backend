@@ -72,6 +72,14 @@ public class OTPServiceImpl implements OTPService{
             return false;
         }
     }
+
+    @Override
+    public OTPDocument getOTPDetails(String userId) {
+        OTPDocument doc = otpRepo.findByUserId(userId)
+                .orElse(null);
+
+        return doc;
+    }
 }
 
 

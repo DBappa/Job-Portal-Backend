@@ -2,6 +2,7 @@ package com.jobportal.jobportal.service;
 
 import com.jobportal.jobportal.dto.LoginDTO;
 import com.jobportal.jobportal.dto.UserDTO;
+import com.jobportal.jobportal.entity.OTPDocument;
 import com.jobportal.jobportal.entity.User;
 import com.jobportal.jobportal.exceptions.JobPortalException;
 import com.jobportal.jobportal.repository.UserRepository;
@@ -75,5 +76,23 @@ public class UserServiceImpl implements UserService{
         message.setText(EmailTemplate.generateOtpEmailHtml(user.getName(),otp,5),true);
         mailSender.send(mm);
         return true;
+    }
+
+    @Override
+    public boolean verifyOTP(String email, String otp) throws JobPortalException {
+        boolean isVerified=false;
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new JobPortalException("USER_NOT_FOUND"));
+        OTPDocument otpDocument=otpService.getOTPDetails(String.valueOf(user.getId()));
+        if(otpDocument==null)
+            throw new JobPortalException("OTP not found");
+        if(otpDocument.getExpiresAt()<System.currentTimeMillis())
+            throw new JobPortalException("OTP Expired!!! Try login again");
+        if(otpDocument.getAttempts()>0)
+            isVerified =otpService.verifyOTP(String.valueOf(user.getId()),otp);
+        if(!isVerified){
+            int attempsLeft= 2-otpDocument.getAttempts();
+            throw new JobPortalException("Invalid OTP "+attempsLeft+ " attempts left");
+        }
+        return isVerified;
     }
 }

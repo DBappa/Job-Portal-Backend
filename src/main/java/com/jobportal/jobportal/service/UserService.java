@@ -13,4 +13,6 @@ public interface UserService {
 
 
     public Boolean sendOtp(String email) throws Exception;
+
+    public boolean verifyOTP(String email, String otp) throws JobPortalException;
 }
