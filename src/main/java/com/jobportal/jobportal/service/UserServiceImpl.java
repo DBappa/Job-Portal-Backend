@@ -1,6 +1,7 @@
 package com.jobportal.jobportal.service;
 
 import com.jobportal.jobportal.dto.LoginDTO;
+import com.jobportal.jobportal.dto.ResponseDTO;
 import com.jobportal.jobportal.dto.UserDTO;
 import com.jobportal.jobportal.entity.OTPDocument;
 import com.jobportal.jobportal.entity.User;
@@ -17,6 +18,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -95,4 +98,14 @@ public class UserServiceImpl implements UserService{
         }
         return isVerified;
     }
+
+    @Override
+    public ResponseDTO changePassword(LoginDTO loginDTO) throws JobPortalException{
+        User user = userRepository.findByEmail(loginDTO.getEmail()).orElseThrow(() -> new JobPortalException("USER_NOT_FOUND"));
+        user.setPassword(passwordEncoder.encode(loginDTO.getPassword()));
+        userRepository.save(user);
+        return new ResponseDTO("Password changed Successfully.");
+    }
+
+
 }

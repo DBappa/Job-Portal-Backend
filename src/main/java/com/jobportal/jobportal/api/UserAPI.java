@@ -46,4 +46,9 @@ public class UserAPI {
         return new ResponseEntity<>(new ResponseDTO("OTP has been verified"), HttpStatus.ACCEPTED);
     }
 
+    @PostMapping("/changePass")
+    public ResponseEntity<ResponseDTO> changePassword(@RequestBody @Valid LoginDTO loginDTO) throws JobPortalException{
+        return new ResponseEntity<>(userService.changePassword(loginDTO),HttpStatus.OK);
+    }
+
 }
