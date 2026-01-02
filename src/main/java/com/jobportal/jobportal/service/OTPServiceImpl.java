@@ -33,7 +33,7 @@ public class OTPServiceImpl implements OTPService{
 
         long expiry = Instant.now().plusSeconds(300).toEpochMilli(); // 5 min
 
-        // If OTP already exists for user, overwrite it
+        // If OTP already exists for user, overwrite it// For Resend Purpose
         OTPDocument doc = otpRepo.findByUserId(userId).orElse(new OTPDocument());
         doc.setUserId(userId);
         doc.setOtpHash(otpHash);

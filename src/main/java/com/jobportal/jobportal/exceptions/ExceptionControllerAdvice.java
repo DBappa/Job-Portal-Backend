@@ -33,6 +33,9 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(JobPortalException.class)
     public ResponseEntity<ErrorInfo> handleException(JobPortalException ex) {
         String message=env.getProperty(ex.getMessage());
+        if(message==null || message.isEmpty()){
+            message=ex.getMessage();
+        }
         ErrorInfo errorInfo = new ErrorInfo(message, HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 LocalDateTime.now());
         return new ResponseEntity<>(errorInfo, HttpStatus.INTERNAL_SERVER_ERROR);

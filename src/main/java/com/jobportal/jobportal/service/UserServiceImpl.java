@@ -90,10 +90,10 @@ public class UserServiceImpl implements UserService{
             throw new JobPortalException("OTP not found");
         if(otpDocument.getExpiresAt()<System.currentTimeMillis())
             throw new JobPortalException("OTP Expired!!! Try login again");
-        if(otpDocument.getAttempts()>0)
+        if(otpDocument.getAttempts()<3)
             isVerified =otpService.verifyOTP(String.valueOf(user.getId()),otp);
         if(!isVerified){
-            int attempsLeft= 2-otpDocument.getAttempts();
+            int attempsLeft= 3-otpDocument.getAttempts();
             throw new JobPortalException("Invalid OTP "+attempsLeft+ " attempts left");
         }
         return isVerified;
