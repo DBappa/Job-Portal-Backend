@@ -30,6 +30,9 @@ public class UserServiceImpl implements UserService{
     private SequenceGeneratorService sequenceGeneratorService;
 
     @Autowired
+    private ProfileService profileService;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -49,8 +52,9 @@ public class UserServiceImpl implements UserService{
         if(existingUser.isPresent()){
             throw new JobPortalException("USER_FOUND");
         }
-        userDTO.setId(sequenceGeneratorService.getNextSequence("user"));
+        userDTO.setId(sequenceGeneratorService.getNextSequence("users"));
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        userDTO.setProfileId(profileService.createProfile(userDTO.getEmail()));
         User user = userDTO.toEntity();
         user = userRepository.save(user);
         return user.toDTO();
