@@ -1,7 +1,9 @@
 package com.jobportal.jobportal.service;
 
 
+import com.jobportal.jobportal.dto.ProfileDTO;
 import com.jobportal.jobportal.entity.Profile;
+import com.jobportal.jobportal.exceptions.JobPortalException;
 import com.jobportal.jobportal.repository.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,5 +35,17 @@ public class ProfileServiceImpl implements ProfileService{
 
         profile = profileRepository.save(profile);
         return profile.getId();
+    }
+
+    @Override
+    public ProfileDTO getProfile(Long id) throws JobPortalException{
+        return profileRepository.findById(id).orElseThrow(() -> new JobPortalException("PROFILE_NOT_FOUND")).toDTO();
+    }
+
+    @Override
+    public ProfileDTO updateProfile(ProfileDTO profileDTO) throws JobPortalException{
+        profileRepository.findById(profileDTO.getId()).orElseThrow(() -> new JobPortalException("PROFILE_NOT_FOUND"));
+        profileRepository.save(profileDTO.toEntity());
+        return profileDTO;
     }
 }
